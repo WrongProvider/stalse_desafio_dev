@@ -90,6 +90,28 @@ def get_tickets():
     return tickets
 
 
+@app.get("/tickets/{ticket_id}")
+def get_ticket(ticket_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
+    r = c.fetchone()
+    conn.close()
+
+    if not r:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return {
+        "id": r[0],
+        "customer_name": r[1],
+        "channel": r[2],
+        "subject": r[3],
+        "status": r[4],
+        "priority": r[5],
+        "created_at": r[6],
+    }
+
+
 @app.patch("/tickets/{ticket_id}")
 def update_ticket(ticket_id: int, ticket: TicketUpdate):
     conn = sqlite3.connect(DB_PATH)
