@@ -2,6 +2,9 @@
 import { notFound } from "next/navigation";
 import TicketDetailClient from "./TicketDetailClient";
 
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 async function getTicket(id: string) {
   try {
     const res = await fetch(`http://localhost:8000/tickets/${id}`, {
@@ -15,13 +18,14 @@ async function getTicket(id: string) {
   }
 }
 
-export default async function TicketDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  // No Next. App Router, parâmetros de rotas dinâmicas vêm em params
-  const ticket = await getTicket(params.id);
+export default async function TicketDetailPage({ params }: PageProps) {
+  // A partir do Next.js 15, o objeto params (assim como searchParams) em Server Components e rotas dinâmicas passou a ser uma Promise.
+  // Portanto, você não pode mais acessar params.id diretamente de forma síncrona;
+  // você precisa dar um await no objeto params antes de ler suas propriedades.
+
+  const resolvedParams = await params;
+
+  const ticket = await getTicket(resolvedParams.id);
 
   // Se o backend retornar 404 ou falhar, renderiza a página de 404 padrão do Next.js
   if (!ticket) {
