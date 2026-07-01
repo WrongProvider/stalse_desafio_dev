@@ -1,15 +1,16 @@
 import json
 import os
 import sqlite3
+from typing import Dict, Optional
 
-import requests
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI(title="Mini Inbox API")
 
-# Configura CORS para o Next.js
+# Configura CORS para o Next.js (Localhost)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -18,15 +19,18 @@ app.add_middleware(
 )
 
 DB_PATH = "db.sqlite"
-N8N_WEBHOOK_URL = (
-    "http://localhost:5678/webhook/tickets"  # Ajuste para a URL real do seu n8n
-)
 
 
-# Schema para o PATCH
+# Schemas do Pydantic (Tipagem)
 class TicketUpdate(BaseModel):
-    status: str = None
-    priority: str = None
+    status: Optional[str] = None
+    priority: Optional[str] = None
+
+
+class MetricsResponse(BaseModel):
+    tickets_per_day: Dict[str, int]
+    top_categories: Dict[str, int]
+    total_tickets: int
 
 
 def init_db():
@@ -41,12 +45,26 @@ def init_db():
                   priority TEXT,
                   created_at TEXT)""")
 
-    # Seeds (básico bem feito)
+    # Seeds Iniciais
     c.execute("SELECT COUNT(*) FROM tickets")
     if c.fetchone()[0] == 0:
         tickets = [
-            ("Matheus Gusmão", "email", "Login issue", "open", "high", "2026-06-30"),
-            ("Bruce Wayne", "chat", "Billing error", "open", "normal", "2026-06-29"),
+            (
+                "Matheus Gusmão",
+                "email",
+                "Problema no pagamento",
+                "open",
+                "high",
+                "2026-06-30",
+            ),
+            (
+                "Bruce Wayne",
+                "chat",
+                "Dúvida sobre entrega",
+                "open",
+                "normal",
+                "2026-06-29",
+            ),
         ]
         c.executemany(
             "INSERT INTO tickets (customer_name, channel, subject, status, priority, created_at) VALUES (?, ?, ?, ?, ?, ?)",
@@ -88,7 +106,6 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate):
 
     conn.commit()
 
-    # Verifica ticket atualizado
     c.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
     row = c.fetchone()
     conn.close()
@@ -98,23 +115,27 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate):
 
     updated_data = {"id": row[0], "status": row[4], "priority": row[5]}
 
-    # Dispara n8n
-    if updated_data["status"] == "closed" or updated_data["priority"] == "high":
-        try:
-            requests.post(N8N_WEBHOOK_URL, json=updated_data, timeout=2)
-        except Exception as e:
-            print(f"Failed to trigger webhook: {e}")
+    # O bloco do n8n foi totalmente removido daqui para focar apenas no retorno limpo dos dados.
 
     return {"message": "Ticket updated", "data": updated_data}
 
 
-@app.get("/metrics")
+@app.get("/metrics", response_model=MetricsResponse)
 def get_metrics():
-    metrics_path = "../data/processed/metrics.json"
+    # Resolve o caminho de forma absoluta independente de onde o uvicorn for rodado
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    metrics_path = os.path.join(base_dir, "data", "processed", "metrics.json")
+
     if not os.path.exists(metrics_path):
         raise HTTPException(
             status_code=404, detail="Metrics file not found. Run ETL first."
         )
 
-    with open(metrics_path, "r") as f:
-        return json.load(f)
+    with open(metrics_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        return data
+
+
+# Configuração para rodar o servidor localmente com uvicorn de forma direta
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
