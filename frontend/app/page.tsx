@@ -1,45 +1,33 @@
-import Link from "next/link";
+import TicketTable from "./TicketTable";
 
 async function getTickets() {
-  const res = await fetch("http://localhost:8000/tickets", {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Failed to fetch tickets");
-  return res.json();
+  try {
+    const res = await fetch("http://localhost:8000/tickets", {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch tickets");
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return []; // Retorna um array vazio caso o backend esteja offline
+  }
 }
 
 export default async function TicketsPage() {
   const tickets = await getTickets();
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Tickets</h1>
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">ID</th>
-            <th className="border p-2">Customer</th>
-            <th className="border p-2">Subject</th>
-            <th className="border p-2">Status</th>
-            <th className="border p-2">Priority</th>
-            <th className="border p-2">Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tickets.map((t: any) => (
-            <tr key={t.id}>
-              <td className="border p-2">{t.id}</td>
-              <td className="border p-2">{t.customer_name}</td>
-              <td className="border p-2">{t.subject}</td>
-              <td className="border p-2">{t.status}</td>
-              <td className="border p-2">{t.priority}</td>
-              <td className="border p-2 text-blue-500">
-                <Link href={`/tickets/${t.id}`}>Editar</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <main className="mx-auto w-full max-w-7xl p-6 sm:p-8 space-y-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          Inbox de Tickets
+        </h1>
+        <p className="text-sm text-gray-500">
+          Gerencie os chamados de suporte e acompanhe o status de atendimento.
+        </p>
+      </div>
+
+      <TicketTable initialTickets={tickets} />
     </main>
   );
 }
