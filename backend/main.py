@@ -1,7 +1,7 @@
 import json
 import os
 import sqlite3
-from typing import Dict, Optional
+from typing import Dict, Literal, Optional
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -23,8 +23,8 @@ DB_PATH = "db.sqlite"
 
 # Schemas do Pydantic (Tipagem)
 class TicketUpdate(BaseModel):
-    status: Optional[str] = None
-    priority: Optional[str] = None
+    status: Optional[Literal["open", "pending", "closed"]] = None
+    priority: Optional[Literal["low", "normal", "high"]] = None
 
 
 class MetricsResponse(BaseModel):
@@ -90,6 +90,28 @@ def get_tickets():
     return tickets
 
 
+@app.get("/tickets/{ticket_id}")
+def get_ticket(ticket_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
+    r = c.fetchone()
+    conn.close()
+
+    if not r:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return {
+        "id": r[0],
+        "customer_name": r[1],
+        "channel": r[2],
+        "subject": r[3],
+        "status": r[4],
+        "priority": r[5],
+        "created_at": r[6],
+    }
+
+
 @app.patch("/tickets/{ticket_id}")
 def update_ticket(ticket_id: int, ticket: TicketUpdate):
     conn = sqlite3.connect(DB_PATH)
@@ -114,8 +136,6 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate):
         raise HTTPException(status_code=404, detail="Ticket not found")
 
     updated_data = {"id": row[0], "status": row[4], "priority": row[5]}
-
-    # O bloco do n8n foi totalmente removido daqui para focar apenas no retorno limpo dos dados.
 
     return {"message": "Ticket updated", "data": updated_data}
 
