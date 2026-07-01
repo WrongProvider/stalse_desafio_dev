@@ -23,8 +23,8 @@ DB_PATH = "db.sqlite"
 
 # Schemas do Pydantic (Tipagem)
 class TicketUpdate(BaseModel):
-    status: Optional[Literal["open", "pending", "closed"]] = None
-    priority: Optional[Literal["low", "medium", "high"]] = None
+    status: Optional[Literal["aberto", "pendente", "fechado"]] = None
+    priority: Optional[Literal["baixa", "media", "alta"]] = None
 
 
 class MetricsResponse(BaseModel):
@@ -53,16 +53,16 @@ def init_db():
                 "Matheus Gusmão",
                 "email",
                 "Problema no pagamento",
-                "open",
-                "high",
+                "aberto",
+                "alta",
                 "2026-06-30",
             ),
             (
                 "Bruce Wayne",
                 "chat",
                 "Dúvida sobre entrega",
-                "open",
-                "medium",
+                "aberto",
+                "media",
                 "2026-06-29",
             ),
         ]

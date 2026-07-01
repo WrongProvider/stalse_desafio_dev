@@ -10,8 +10,8 @@ interface Ticket {
   customer_name: string;
   channel?: string;
   subject: string;
-  status: "open" | "pending" | "closed";
-  priority: "low" | "medium" | "high";
+  status: "aberto" | "pendente" | "fechado";
+  priority: "baixa" | "media" | "alta";
 }
 
 export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
@@ -32,11 +32,11 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "open":
+      case "aberto":
         return "bg-green-100 text-green-700 border-green-200";
-      case "pending":
+      case "pendente":
         return "bg-amber-100 text-amber-700 border-amber-200";
-      case "closed":
+      case "fechado":
         return "bg-gray-100 text-gray-600 border-gray-200";
       default:
         return "bg-gray-100 text-gray-700";
@@ -45,11 +45,11 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
 
   const getPriorityStyle = (priority: string) => {
     switch (priority) {
-      case "high":
+      case "alta":
         return "bg-rose-100 text-rose-700 border-rose-200 font-semibold";
-      case "medium":
+      case "media":
         return "bg-blue-100 text-blue-700 border-blue-200";
-      case "low":
+      case "baixa":
         return "bg-slate-100 text-slate-600 border-slate-200";
       default:
         return "bg-gray-100 text-gray-700";
@@ -128,22 +128,22 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
               </span>
               <div className="flex flex-wrap gap-2">
                 <button
-                  disabled={isUpdating || ticket.status === "open"}
-                  onClick={() => handleUpdate({ status: "open" })}
+                  disabled={isUpdating || ticket.status === "aberto"}
+                  onClick={() => handleUpdate({ status: "aberto" })}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
                   Abrir
                 </button>
                 <button
-                  disabled={isUpdating || ticket.status === "pending"}
-                  onClick={() => handleUpdate({ status: "pending" })}
+                  disabled={isUpdating || ticket.status === "pendente"}
+                  onClick={() => handleUpdate({ status: "pendente" })}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
                   Pendente
                 </button>
                 <button
-                  disabled={isUpdating || ticket.status === "closed"}
-                  onClick={() => handleUpdate({ status: "closed" })}
+                  disabled={isUpdating || ticket.status === "fechado"}
+                  onClick={() => handleUpdate({ status: "fechado" })}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 disabled:opacity-50"
                 >
                   Fechar Chamado
@@ -158,22 +158,22 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
               </span>
               <div className="flex flex-wrap gap-2">
                 <button
-                  disabled={isUpdating || ticket.priority === "low"}
-                  onClick={() => handleUpdate({ priority: "low" })}
+                  disabled={isUpdating || ticket.priority === "baixa"}
+                  onClick={() => handleUpdate({ priority: "baixa" })}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
                   Baixa
                 </button>
                 <button
-                  disabled={isUpdating || ticket.priority === "medium"}
-                  onClick={() => handleUpdate({ priority: "medium" })}
+                  disabled={isUpdating || ticket.priority === "media"}
+                  onClick={() => handleUpdate({ priority: "media" })}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
                   Média
                 </button>
                 <button
-                  disabled={isUpdating || ticket.priority === "high"}
-                  onClick={() => handleUpdate({ priority: "high" })}
+                  disabled={isUpdating || ticket.priority === "alta"}
+                  onClick={() => handleUpdate({ priority: "alta" })}
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 disabled:opacity-50"
                 >
                   Alta ⚡

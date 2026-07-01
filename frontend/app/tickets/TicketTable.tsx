@@ -8,8 +8,8 @@ interface Ticket {
   customer_name: string;
   channel?: string;
   subject: string;
-  status: "open" | "pending" | "closed";
-  priority: "low" | "medium" | "high";
+  status: "aberto" | "pendente" | "fechado";
+  priority: "baixa" | "media" | "alta";
   created_at?: string;
 }
 
@@ -29,11 +29,11 @@ export default function TicketTable({
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "open":
+      case "aberto":
         return "bg-green-100 text-green-700 border-green-200";
-      case "pending":
+      case "pendente":
         return "bg-amber-100 text-amber-700 border-amber-200";
-      case "closed":
+      case "fechado":
         return "bg-gray-100 text-gray-600 border-gray-200";
       default:
         return "bg-gray-100 text-gray-700";
@@ -42,11 +42,11 @@ export default function TicketTable({
 
   const getPriorityStyle = (priority: string) => {
     switch (priority) {
-      case "high":
+      case "alta":
         return "bg-rose-100 text-rose-700 border-rose-200 font-semibold";
-      case "medium":
+      case "media":
         return "bg-blue-100 text-blue-700 border-blue-200";
-      case "low":
+      case "baixa":
         return "bg-slate-100 text-slate-600 border-slate-200";
       default:
         return "bg-gray-100 text-gray-700";
