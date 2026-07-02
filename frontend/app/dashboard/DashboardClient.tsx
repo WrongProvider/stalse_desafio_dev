@@ -21,9 +21,6 @@ export default function DashboardClient({ metrics }: DashboardClientProps) {
       {/* Cabeçalho Premium */}
       <div className="max-w-6xl mx-auto mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-            Métricas de Performance
-          </span>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight mt-2">
             Dashboard Executivo
           </h1>
