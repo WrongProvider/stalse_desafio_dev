@@ -7,8 +7,8 @@ export function useUpdateTicket() {
   const updateTicket = async (
     id: number | string,
     data: {
-      status?: "open" | "pending" | "closed";
-      priority?: "low" | "medium" | "high";
+      status?: "aberto" | "pendente" | "fechado";
+      priority?: "baixa" | "media" | "alta";
     },
   ) => {
     setIsUpdating(true);
