@@ -64,6 +64,12 @@ export default function TicketTable({
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full max-w-md px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
         />
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all active:scale-95 gap-2"
+        >
+          Ir para dashboard ➝
+        </Link>
       </div>
 
       {/* Tabela Estilizada */}
