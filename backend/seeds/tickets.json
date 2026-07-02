@@ -1,0 +1,162 @@
+[
+  {
+    "customer_name": "Ana Silva",
+    "channel": "WhatsApp",
+    "subject": "Problema no login da plataforma",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-01T09:30:00Z"
+  },
+  {
+    "customer_name": "Carlos Souza",
+    "channel": "Email",
+    "subject": "Dúvida sobre faturamento da mensalidade",
+    "status": "pendente",
+    "priority": "media",
+    "created_at": "2026-07-01T10:15:00Z"
+  },
+  {
+    "customer_name": "Beatriz Santos",
+    "channel": "Chat",
+    "subject": "Erro ao carregar relatório de métricas",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-01T11:00:00Z"
+  },
+  {
+    "customer_name": "Diego Oliveira",
+    "channel": "Email",
+    "subject": "Solicitação de cancelamento de plano",
+    "status": "fechado",
+    "priority": "baixa",
+    "created_at": "2026-07-01T11:45:00Z"
+  },
+  {
+    "customer_name": "Fernanda Lima",
+    "channel": "WhatsApp",
+    "subject": "Segunda via do boleto vencido",
+    "status": "fechado",
+    "priority": "baixa",
+    "created_at": "2026-07-01T13:20:00Z"
+  },
+  {
+    "customer_name": "Gabriel Ribeiro",
+    "channel": "Chat",
+    "subject": "Integração de API falhando (Erro 500)",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-01T14:10:00Z"
+  },
+  {
+    "customer_name": "Juliana Costa",
+    "channel": "Email",
+    "subject": "Atualização de dados cadastrais PJ",
+    "status": "pendente",
+    "priority": "media",
+    "created_at": "2026-07-01T15:05:00Z"
+  },
+  {
+    "customer_name": "Lucas Martins",
+    "channel": "WhatsApp",
+    "subject": "Link de redefinição de senha expirado",
+    "status": "fechado",
+    "priority": "baixa",
+    "created_at": "2026-07-01T16:40:00Z"
+  },
+  {
+    "customer_name": "Mariana Almeida",
+    "channel": "Chat",
+    "subject": "Mudança de plano para a categoria Premium",
+    "status": "aberto",
+    "priority": "media",
+    "created_at": "2026-07-02T08:15:00Z"
+  },
+  {
+    "customer_name": "Pedro Rocha",
+    "channel": "Email",
+    "subject": "Notificações do sistema não estão chegando",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-02T09:00:00Z"
+  },
+  {
+    "customer_name": "Camila Vieira",
+    "channel": "WhatsApp",
+    "subject": "Atraso na entrega dos produtos",
+    "status": "pendente",
+    "priority": "alta",
+    "created_at": "2026-07-02T09:45:00Z"
+  },
+  {
+    "customer_name": "Rodrigo Mendes",
+    "channel": "Email",
+    "subject": "Estorno de cobrança duplicada no cartão",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-02T10:30:00Z"
+  },
+  {
+    "customer_name": "Patricia Gomes",
+    "channel": "Chat",
+    "subject": "Como configurar o webhook de saída?",
+    "status": "fechado",
+    "priority": "media",
+    "created_at": "2026-07-02T11:15:00Z"
+  },
+  {
+    "customer_name": "Ricardo Santos",
+    "channel": "WhatsApp",
+    "subject": "Aplicativo travando na tela inicial",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-02T13:00:00Z"
+  },
+  {
+    "customer_name": "Amanda Ferreira",
+    "channel": "Email",
+    "subject": "Pedido de proposta comercial personalizada",
+    "status": "pendente",
+    "priority": "baixa",
+    "created_at": "2026-07-02T14:20:00Z"
+  },
+  {
+    "customer_name": "Thiago Araujo",
+    "channel": "Chat",
+    "subject": "Instabilidade na API em produção",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-02T14:55:00Z"
+  },
+  {
+    "customer_name": "Larissa Carvalho",
+    "channel": "WhatsApp",
+    "subject": "Dúvida sobre limite de usuários simultâneos",
+    "status": "fechado",
+    "priority": "baixa",
+    "created_at": "2026-07-02T15:30:00Z"
+  },
+  {
+    "customer_name": "Bruno Cardoso",
+    "channel": "Email",
+    "subject": "Relatório exportado em CSV corrompido",
+    "status": "pendente",
+    "priority": "media",
+    "created_at": "2026-07-02T16:10:00Z"
+  },
+  {
+    "customer_name": "Vanessa Barbosa",
+    "channel": "Chat",
+    "subject": "Ativação de cupom de desconto na assinatura",
+    "status": "fechado",
+    "priority": "baixa",
+    "created_at": "2026-07-02T16:45:00Z"
+  },
+  {
+    "customer_name": "Felipe Dias",
+    "channel": "Email",
+    "subject": "Aumento do limite de requisições por minuto",
+    "status": "aberto",
+    "priority": "alta",
+    "created_at": "2026-07-02T17:20:00Z"
+  }
+]
