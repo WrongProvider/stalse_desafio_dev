@@ -9,7 +9,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI(title="Mini Inbox API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="Mini Inbox API", lifespan=lifespan)
 
 # Configura CORS para o Next.js (Localhost)
 app.add_middleware(
@@ -19,8 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DB_PATH = "db.sqlite"
-SEEDS_PATH = "../seeds/tickets.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "db.sqlite")
+SEEDS_PATH = os.path.join(BASE_DIR, "seeds", "tickets.json")
 
 
 # Schemas do Pydantic (Tipagem)
@@ -72,12 +80,6 @@ def init_db():
         )
     conn.commit()
     conn.close()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()
-    yield
 
 
 @app.get("/tickets")
