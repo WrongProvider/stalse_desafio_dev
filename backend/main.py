@@ -1,6 +1,7 @@
 import json
 import os
 import sqlite3
+from contextlib import asynccontextmanager
 from typing import Dict, Literal, Optional
 
 import uvicorn
@@ -8,7 +9,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI(title="Mini Inbox API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="Mini Inbox API", lifespan=lifespan)
 
 # Configura CORS para o Next.js (Localhost)
 app.add_middleware(
@@ -18,7 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DB_PATH = "db.sqlite"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "db.sqlite")
+SEEDS_PATH = os.path.join(BASE_DIR, "seeds", "tickets.json")
 
 
 # Schemas do Pydantic (Tipagem)
@@ -31,6 +41,11 @@ class MetricsResponse(BaseModel):
     tickets_per_day: Dict[str, int]
     top_categories: Dict[str, int]
     total_tickets: int
+
+
+def load_seeds():
+    with open(SEEDS_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def init_db():
@@ -48,35 +63,23 @@ def init_db():
     # Seeds Iniciais
     c.execute("SELECT COUNT(*) FROM tickets")
     if c.fetchone()[0] == 0:
-        tickets = [
-            (
-                "Matheus Gusmão",
-                "email",
-                "Problema no pagamento",
-                "aberto",
-                "alta",
-                "2026-06-30",
-            ),
-            (
-                "Bruce Wayne",
-                "chat",
-                "Dúvida sobre entrega",
-                "aberto",
-                "media",
-                "2026-06-29",
-            ),
-        ]
+        tickets = load_seeds()
         c.executemany(
             "INSERT INTO tickets (customer_name, channel, subject, status, priority, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-            tickets,
+            [
+                (
+                    t["customer_name"],
+                    t["channel"],
+                    t["subject"],
+                    t["status"],
+                    t["priority"],
+                    t["created_at"],
+                )
+                for t in tickets
+            ],
         )
     conn.commit()
     conn.close()
-
-
-@app.on_event("startup")
-def startup():
-    init_db()
 
 
 @app.get("/tickets")
