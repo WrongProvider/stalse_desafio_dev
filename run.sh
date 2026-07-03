@@ -9,6 +9,11 @@ if [ ! -f "data/processed/metrics.json" ]; then
   (cd data && uv run python etl.py)
 fi
 
+if [ ! -d "frontend/node_modules" ]; then
+  echo "Instalando dependências do frontend..."
+  (cd frontend && npm install)
+fi
+
 # Sobe backend e frontend em paralelo
 (cd backend && uv run uvicorn main:app --reload) &
 BACKEND_PID=$!

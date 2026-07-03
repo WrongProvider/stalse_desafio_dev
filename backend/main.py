@@ -23,7 +23,7 @@ app = FastAPI(title="Mini Inbox API", lifespan=lifespan)
 # Configura CORS para o Next.js (Localhost)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
