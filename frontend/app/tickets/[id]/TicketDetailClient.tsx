@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUpdateTicket } from "@/hooks/useUpdateTicket";
 import { TicketUpdateFields, Ticket } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 
 export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
   const router = useRouter();
@@ -81,7 +82,7 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
         </div>
 
         {/* Informações do Cliente */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-900">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-900">
           <div>
             <span className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
               Cliente
@@ -93,6 +94,12 @@ export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
               Canal de Origem
             </span>
             <p className="capitalize">{ticket.channel || "Web"}</p>
+          </div>
+          <div>
+            <span className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+              Aberto em
+            </span>
+            <p>{formatDate(ticket.created_at)}</p>
           </div>
         </div>
 

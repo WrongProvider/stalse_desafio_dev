@@ -8,7 +8,7 @@ export interface Ticket {
   subject: string;
   status: "aberto" | "pendente" | "fechado";
   priority: "baixa" | "media" | "alta";
-  created_at?: string;
+  created_at: string;
 }
 
 export interface TicketUpdateFields {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Ticket } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 
 export default function TicketTable({
   initialTickets,
@@ -102,7 +103,9 @@ export default function TicketTable({
                     <td className="px-6 py-4 font-medium text-slate-900">
                       {t.customer_name}
                     </td>
-                    <td className="px-6 py-4 text-slate-500">{t.created_at}</td>
+                    <td className="px-6 py-4 text-slate-500">
+                      {formatDate(t.created_at)}
+                    </td>
                     <td className="px-6 py-4 capitalize text-slate-500">
                       {t.channel || "Web"}
                     </td>
