@@ -48,6 +48,9 @@ npm run dev
 ```
 App disponível em `http://localhost:3000`.
 
+## prints
+<img width="1910" height="984" alt="image" src="https://github.com/user-attachments/assets/5458a8b2-43de-41de-982e-8e5378111dfb" /> <img width="1910" height="984" alt="image" src="https://github.com/user-attachments/assets/84c3bd48-1cc5-4798-8920-a4b45527e297" />
+
 ## Endpoints
 
 | Método | Rota             | Descrição                                  |
