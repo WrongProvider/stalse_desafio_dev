@@ -1,19 +1,18 @@
 import json
 import os
-from fcntl import I_LOOK
-from sre_parse import IN_LOC_IGNORE
 
 import pandas as pd
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def run_etl():
     print("Iniciando ETL com dados da Olist...")
 
-    # Caminhos (ajuste se os nomes dos seus arquivos estiverem diferentes)
-    REVIEWS_PATH = "raw/olist_order_reviews_dataset.csv"
-    ITEMS_PATH = "raw/olist_order_items_dataset.csv"
-    PRODUCTS_PATH = "raw/olist_products_dataset.csv"
-    PROCESSED_DATA_PATH = "processed/metrics.json"
+    REVIEWS_PATH = os.path.join(BASE_DIR, "raw", "olist_order_reviews_dataset.csv")
+    ITEMS_PATH = os.path.join(BASE_DIR, "raw", "olist_order_items_dataset.csv")
+    PRODUCTS_PATH = os.path.join(BASE_DIR, "raw", "olist_products_dataset.csv")
+    PROCESSED_DATA_PATH = os.path.join(BASE_DIR, "processed", "metrics.json")
 
     # 1. Leitura dos CSVs
     try:
@@ -61,16 +60,6 @@ def run_etl():
     with open(PROCESSED_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=4, ensure_ascii=False)
 
-    # observacao manual do dataframe
-    # with open("processed/merged.csv", "w", encoding="utf-8") as f:
-    #     df_merged.to_csv(f, index=False)
-
-    # verificar linhas quebradas
-    # print(df_merged.shape)  # Verifica se o número de linhas/colunas está correto
-    # print(df_merged.info())  # Verifica se há dados nulos onde não deveria
-    # print(
-    #     df_merged.iloc[22], df_merged.iloc[41]
-    # )  # Imprime a primeira linha completa para conferir os campos
     print(f"ETL finalizado com sucesso! Métricas geradas em {PROCESSED_DATA_PATH}")
 
 

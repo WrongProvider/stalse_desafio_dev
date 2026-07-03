@@ -1,11 +1,13 @@
+import asyncio
 import json
 import os
 import sqlite3
 from contextlib import asynccontextmanager
-from typing import Dict, Literal, Optional
+from enum import Enum
+from typing import Dict, List, Literal, Optional
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -29,18 +31,42 @@ app.add_middleware(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "db.sqlite")
 SEEDS_PATH = os.path.join(BASE_DIR, "seeds", "tickets.json")
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+METRICS_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "metrics.json")
 
 
 # Schemas do Pydantic (Tipagem)
+class TicketStatus(str, Enum):
+    ABERTO = "aberto"
+    PENDENTE = "pendente"
+    FECHADO = "fechado"
+
+
+class TicketPriority(str, Enum):
+    BAIXA = "baixa"
+    MEDIA = "media"
+    ALTA = "alta"
+
+
 class TicketUpdate(BaseModel):
-    status: Optional[Literal["aberto", "pendente", "fechado"]] = None
-    priority: Optional[Literal["baixa", "media", "alta"]] = None
+    status: Optional[TicketStatus] = None
+    priority: Optional[TicketPriority] = None
 
 
 class MetricsResponse(BaseModel):
     tickets_per_day: Dict[str, int]
     top_categories: Dict[str, int]
     total_tickets: int
+
+
+class TicketResponse(BaseModel):
+    id: int
+    customer_name: str
+    channel: str
+    subject: str
+    status: Optional[TicketStatus]
+    priority: Optional[TicketPriority]
+    created_at: str
 
 
 def load_seeds():
@@ -82,43 +108,40 @@ def init_db():
     conn.close()
 
 
-@app.get("/tickets")
-def get_tickets():
+def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    c = conn.cursor()
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+
+@app.get("/tickets", response_model=List[TicketResponse])
+def get_tickets(db: sqlite3.Connection = Depends(get_db)):
+    c = db.cursor()
     c.execute("SELECT * FROM tickets")
     tickets = [dict(row) for row in c.fetchall()]
-    conn.close()
     return tickets
 
 
-@app.get("/tickets/{ticket_id}")
-def get_ticket(ticket_id: int):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+@app.get("/tickets/{ticket_id}", response_model=TicketResponse)
+def get_ticket(ticket_id: int, db: sqlite3.Connection = Depends(get_db)):
+    c = db.cursor()
     c.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
     r = c.fetchone()
-    conn.close()
 
     if not r:
         raise HTTPException(status_code=404, detail="Ticket not found")
 
-    return {
-        "id": r[0],
-        "customer_name": r[1],
-        "channel": r[2],
-        "subject": r[3],
-        "status": r[4],
-        "priority": r[5],
-        "created_at": r[6],
-    }
+    return dict(r)
 
 
-@app.patch("/tickets/{ticket_id}")
-def update_ticket(ticket_id: int, ticket: TicketUpdate):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+@app.patch("/tickets/{ticket_id}", response_model=TicketResponse)
+def update_ticket(
+    ticket_id: int, ticket: TicketUpdate, db: sqlite3.Connection = Depends(get_db)
+):
+    c = db.cursor()
 
     if ticket.status:
         c.execute(
@@ -128,35 +151,35 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate):
         c.execute(
             "UPDATE tickets SET priority = ? WHERE id = ?", (ticket.priority, ticket_id)
         )
+    if ticket.status is None and ticket.priority is None:
+        raise HTTPException(
+            status_code=400, detail="Nenhum campo para atualizar foi enviado"
+        )
 
-    conn.commit()
-
+    db.commit()
     c.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
     row = c.fetchone()
-    conn.close()
+    db.close()
 
     if not row:
         raise HTTPException(status_code=404, detail="Ticket not found")
 
-    updated_data = {"id": row[0], "status": row[4], "priority": row[5]}
-
-    return {"message": "Ticket updated", "data": updated_data}
+    return dict(row)
 
 
 @app.get("/metrics", response_model=MetricsResponse)
-def get_metrics():
-    # Resolve o caminho de forma absoluta independente de onde o uvicorn for rodado
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    metrics_path = os.path.join(base_dir, "data", "processed", "metrics.json")
-
-    if not os.path.exists(metrics_path):
+async def get_metrics():
+    if not os.path.exists(METRICS_PATH):
         raise HTTPException(
             status_code=404, detail="Metrics file not found. Run ETL first."
         )
 
-    with open(metrics_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        return data
+    def read_metrics():
+        with open(METRICS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    data = await asyncio.to_thread(read_metrics)
+    return data
 
 
 # Configuração para rodar o servidor localmente com uvicorn de forma direta

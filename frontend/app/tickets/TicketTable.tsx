@@ -139,7 +139,7 @@ export default function TicketTable({
               ) : (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-6 py-12 text-center text-sm text-slate-400"
                   >
                     Nenhum ticket encontrado.
