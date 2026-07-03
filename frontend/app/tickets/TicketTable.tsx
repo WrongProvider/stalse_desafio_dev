@@ -90,6 +90,7 @@ export default function TicketTable({
               <tr>
                 <th className="px-6 py-4">ID</th>
                 <th className="px-6 py-4">Cliente</th>
+                <th className="px-6 py-4">Data</th>
                 <th className="px-6 py-4">Canal</th>
                 <th className="px-6 py-4">Assunto</th>
                 <th className="px-6 py-4">Status</th>
@@ -110,6 +111,7 @@ export default function TicketTable({
                     <td className="px-6 py-4 font-medium text-slate-900">
                       {t.customer_name}
                     </td>
+                    <td className="px-6 py-4 text-slate-500">{t.created_at}</td>
                     <td className="px-6 py-4 capitalize text-slate-500">
                       {t.channel || "Web"}
                     </td>

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useInfiniteMetrics } from "../hooks/useInfiniteMetrics";
 
 interface DashboardClientProps {
   metrics: {
@@ -12,9 +11,8 @@ interface DashboardClientProps {
 }
 
 export default function DashboardClient({ metrics }: DashboardClientProps) {
-  // Aplicando o hook para as duas tabelas de forma independente
-  const categories = useInfiniteMetrics(metrics.top_categories, 6);
-  const dailyData = useInfiniteMetrics(metrics.tickets_per_day, 8);
+  const categories = Object.entries(metrics.top_categories ?? {});
+  const dailyData = Object.entries(metrics.tickets_per_day ?? {});
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 sm:p-8 text-slate-800">
@@ -49,7 +47,7 @@ export default function DashboardClient({ metrics }: DashboardClientProps) {
               {metrics.total_tickets ?? "N/A"}
             </p>
             <p className="text-xs text-slate-400 mt-2">
-              Volume total indexado na base SQLite
+              Total de linhas processadas pelo ETL do pandas.
             </p>
           </div>
 
@@ -68,7 +66,7 @@ export default function DashboardClient({ metrics }: DashboardClientProps) {
           </div>
         </div>
 
-        {/* Seção das Tabelas Dinâmicas com Scroll Infinito */}
+        {/* Tabelas de Métricas */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tabela: Top Categorias */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col h-[480px]">
@@ -80,31 +78,21 @@ export default function DashboardClient({ metrics }: DashboardClientProps) {
             </div>
 
             <div className="overflow-y-auto flex-1 px-6 divide-y divide-slate-100">
-              {categories.visibleItems.length > 0 ? (
+              {categories.length > 0 ? (
                 <>
-                  {categories.visibleItems.map((item, index) => (
+                  {categories.map((item, index) => (
                     <div
                       key={index}
                       className="py-4 flex items-center justify-between hover:bg-slate-50/50 px-2 rounded-lg transition-colors"
                     >
                       <span className="font-medium text-slate-800">
-                        {item.key}
+                        {item[0]}
                       </span>
                       <span className="font-mono text-sm font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
-                        {item.value}
+                        {item[1]}
                       </span>
                     </div>
                   ))}
-
-                  {/* Elemento Sentinela para o Infinite Scroll */}
-                  {categories.hasMore && (
-                    <div
-                      ref={categories.loaderRef}
-                      className="py-6 text-center text-xs text-indigo-600 font-medium animate-pulse"
-                    >
-                      Carregando mais categorias...
-                    </div>
-                  )}
                 </>
               ) : (
                 <div className="py-12 text-center text-slate-400 text-sm">
@@ -124,31 +112,21 @@ export default function DashboardClient({ metrics }: DashboardClientProps) {
             </div>
 
             <div className="overflow-y-auto flex-1 px-6 divide-y divide-slate-100">
-              {dailyData.visibleItems.length > 0 ? (
+              {dailyData.length > 0 ? (
                 <>
-                  {dailyData.visibleItems.map((item, index) => (
+                  {dailyData.map((item, index) => (
                     <div
                       key={index}
                       className="py-4 flex items-center justify-between hover:bg-slate-50/50 px-2 rounded-lg transition-colors"
                     >
                       <span className="font-mono text-sm text-slate-600">
-                        {item.key}
+                        {item[0]}
                       </span>
                       <span className="font-semibold text-slate-900 bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md">
-                        {item.value} chamados
+                        {item[1]} chamados
                       </span>
                     </div>
                   ))}
-
-                  {/* Elemento Sentinela para o Infinite Scroll */}
-                  {dailyData.hasMore && (
-                    <div
-                      ref={dailyData.loaderRef}
-                      className="py-6 text-center text-xs text-indigo-600 font-medium animate-pulse"
-                    >
-                      Carregando mais datas...
-                    </div>
-                  )}
                 </>
               ) : (
                 <div className="py-12 text-center text-slate-400 text-sm">
