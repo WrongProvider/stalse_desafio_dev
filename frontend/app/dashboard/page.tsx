@@ -1,18 +1,5 @@
 import DashboardClient from "./DashboardClient";
-
-async function getMetrics() {
-  try {
-    const res = await fetch("http://localhost:8000/metrics", {
-      cache: "no-store", // Sempre ignora o cache para ler alterações pós ETL
-    });
-
-    if (!res.ok) throw new Error("Falha ao buscar métricas");
-    return res.json();
-  } catch (error) {
-    console.error("Erro no fetch do Dashboard:", error);
-    return null;
-  }
-}
+import { getMetrics } from "@/lib/api";
 
 export default async function DashboardPage() {
   const metrics = await getMetrics();

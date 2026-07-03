@@ -1,17 +1,5 @@
 import TicketTable from "./TicketTable";
-
-async function getTickets() {
-  try {
-    const res = await fetch("http://localhost:8000/tickets", {
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error("Failed to fetch tickets");
-    return res.json();
-  } catch (error) {
-    console.error(error);
-    return []; // Retorna um array vazio caso o backend esteja offline
-  }
-}
+import { getTickets } from "@/lib/api";
 
 export default async function TicketsPage() {
   const tickets = await getTickets();

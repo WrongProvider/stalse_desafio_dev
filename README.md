@@ -63,7 +63,7 @@ curl -X PATCH http://localhost:8000/tickets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "fechado"}'
 ```
-.
+```
 ├── backend/          # API FastAPI + SQLite
 │   ├── main.py
 │   └── seeds/tickets.json   # 20 tickets iniciais
@@ -73,9 +73,12 @@ curl -X PATCH http://localhost:8000/tickets/1 \
 │   └── processed/     # metrics.json gerado pelo ETL
 ├── frontend/          # Next.js App Router
 │   └── app/
-│       ├── tickets/
-│       └── dashboard/
+│       ├── tickets/   # componentes relacionados a tickets
+│       ├── dashboard/ # componentes relacionados ao dashboard
+│       ├── hooks/     # hooks reutilizáveis
+│       └── lib/       # utilitários e tipos reutilizáveis da API
 └── run.sh             # sobe backend + frontend juntos
+```
 
 ## Sobre os dados
 

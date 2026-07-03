@@ -1,21 +1,10 @@
 // app/tickets/[id]/page.tsx
 import { notFound } from "next/navigation";
 import TicketDetailClient from "./TicketDetailClient";
+import { getTicket } from "@/lib/api";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-}
-async function getTicket(id: string) {
-  try {
-    const res = await fetch(`http://localhost:8000/tickets/${id}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch (error) {
-    console.error("Erro ao buscar ticket:", error);
-    return null;
-  }
 }
 
 export default async function TicketDetailPage({ params }: PageProps) {

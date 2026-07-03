@@ -4,24 +4,13 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUpdateTicket } from "@/hooks/useUpdateTicket";
-
-interface Ticket {
-  id: number;
-  customer_name: string;
-  channel?: string;
-  subject: string;
-  status: "aberto" | "pendente" | "fechado";
-  priority: "baixa" | "media" | "alta";
-}
+import { TicketUpdateFields, Ticket } from "@/lib/api";
 
 export default function TicketDetailClient({ ticket }: { ticket: Ticket }) {
   const router = useRouter();
   const { updateTicket, isUpdating, error } = useUpdateTicket();
 
-  const handleUpdate = async (fields: {
-    status?: Ticket["status"];
-    priority?: Ticket["priority"];
-  }) => {
+  const handleUpdate = async (fields: TicketUpdateFields) => {
     const result = await updateTicket(ticket.id, fields);
     if (result?.success) {
       // router.refresh() força o Next.js a re-buscar os dados do Server Component

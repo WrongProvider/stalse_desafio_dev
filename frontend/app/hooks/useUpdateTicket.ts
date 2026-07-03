@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { updateTicket as updateTicketApi } from "@/lib/api";
+import { TicketUpdateFields } from "@/lib/api";
 
 export function useUpdateTicket() {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -6,32 +8,18 @@ export function useUpdateTicket() {
 
   const updateTicket = async (
     id: number | string,
-    data: {
-      status?: "aberto" | "pendente" | "fechado";
-      priority?: "baixa" | "media" | "alta";
-    },
+    data: TicketUpdateFields,
   ) => {
     setIsUpdating(true);
     setError(null);
 
     try {
-      const res = await fetch(`http://localhost:8000/tickets/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        throw new Error("Falha ao atualizar o ticket");
-      }
-
-      const updatedTicket = await res.json();
+      const updatedTicket = await updateTicketApi(id, data);
       return { success: true, data: updatedTicket };
-    } catch (err: any) {
-      setError(err.message || "Erro inesperado");
-      return { success: false, error: err.message };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Erro inesperado";
+      setError(message);
+      return { success: false, error: message };
     } finally {
       setIsUpdating(false);
     }

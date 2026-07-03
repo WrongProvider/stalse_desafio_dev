@@ -2,16 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
-interface Ticket {
-  id: number;
-  customer_name: string;
-  channel?: string;
-  subject: string;
-  status: "aberto" | "pendente" | "fechado";
-  priority: "baixa" | "media" | "alta";
-  created_at?: string;
-}
+import { Ticket } from "@/lib/api";
 
 export default function TicketTable({
   initialTickets,
